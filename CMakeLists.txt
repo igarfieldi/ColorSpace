@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.26.0)
 
-project(BlackBodyColorCalculator CXX)
+project(ColorSpaces CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "2182bf5c-ef0d-489a-91da-49dbc3090d2a")
 set(CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 1)
 
-add_library(Spectrum  STATIC)
-target_sources(Spectrum
+add_library(ColorSpace  STATIC)
+target_sources(ColorSpace
 	PUBLIC
 		FILE_SET cxx_modules TYPE CXX_MODULES FILES
 		${CMAKE_CURRENT_SOURCE_DIR}/src/chromaticity.ixx
@@ -35,8 +35,8 @@ target_sources(Spectrum
 		${CMAKE_CURRENT_SOURCE_DIR}/src/colorspace-srgb.cxx
 		${CMAKE_CURRENT_SOURCE_DIR}/src/colorspace.xyz.cxx)
 
-add_executable(SpectrumTest
+add_executable(ColorSpaceTest
 	${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
-set_target_properties(SpectrumTest PROPERTIES
+set_target_properties(ColorSpaceTest PROPERTIES
 	CXX_STANDARD 20)
-target_link_libraries(SpectrumTest Spectrum)
+target_link_libraries(ColorSpaceTest ColorSpace)

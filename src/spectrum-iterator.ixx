@@ -12,6 +12,12 @@ import :shape;
 
 namespace spectral {
 
+export template < class T >
+struct SpdSample {
+	T wavelength;
+	T value;
+};
+
 template < std::floating_point T, size_t N, SpdShape<T, N> S, bool C >
 class SpdIterator {
 public:
@@ -26,8 +32,8 @@ public:
 
 	using iterator_category = std::input_iterator_tag;
 	using difference_type = std::ptrdiff_t;
-	using value_type = std::pair<T, T>;
-	using reference = std::pair<std::conditional_t<IS_CONST, const T&, T&>, T>;
+	using value_type = SpdSample<T>;
+	using reference = SpdSample<std::conditional_t<IS_CONST, T, T&>>;
 
 	using array_type = std::conditional_t<IS_CONST, const std::array<T, SAMPLE_COUNT>&, std::array<T, SAMPLE_COUNT>&>;
 
@@ -45,7 +51,8 @@ public:
 		return &_coefficients != &rhs._coefficients || _index != rhs._index;
 	}
 
-	constexpr reference operator*() const noexcept { return reference(_coefficients[_index], S.wavelengths_nm[_index] + T(0.5) * (S.wavelengths_nm[_index + 1] - S.wavelengths_nm[_index])); }
+	constexpr reference operator*() const noexcept { return reference( S.wavelengths_nm[_index] + T(0.5) * (S.wavelengths_nm[_index + 1] - S.wavelengths_nm[_index]),
+																	  _coefficients[_index]); }
 	constexpr SpdIterator& operator++() noexcept { ++_index; return *this; }
 	constexpr SpdIterator operator++(int) noexcept { SpdIterator tmp(*this); ++(*this); return tmp; }
 	constexpr SpdIterator& operator--() noexcept { --_index; return *this; }

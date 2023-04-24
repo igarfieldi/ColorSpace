@@ -175,17 +175,13 @@ public:
 		return Spd(coefs);
 	}
 
-	const T min() const noexcept {
-		T res = _coefficients.front();
-		for (size_t i = 1u; i < _coefficients.size(); ++i)
-			res = std::min(res, _coefficients[i]);
-		return res;
+	SpdSample<T> min() const noexcept {
+		const auto iter = std::min_element(_coefficients.cbegin(), _coefficients.cend());
+		return SpdSample<T>{*iter, S.wavelengths_nm[iter - _coefficients.cbegin()]};
 	}
-	const T max() const noexcept {
-		T res = _coefficients.front();
-		for (size_t i = 1u; i < _coefficients.size(); ++i)
-			res = std::max(res, _coefficients[i]);
-		return res;
+	SpdSample<T> max() const noexcept {
+		const auto iter = std::max_element(_coefficients.cbegin(), _coefficients.cend());
+		return SpdSample<T>{*iter, S.wavelengths_nm[iter - _coefficients.cbegin()]};
 	}
 
 	const Spd min(const Spd& other) const noexcept {
@@ -202,7 +198,7 @@ public:
 	}
 	
 	template < colorspace::XYY<T> W >
-	constexpr colorspace::XYZ<T, W> to_xyz() const noexcept {
+	explicit constexpr operator colorspace::XYZ<T, W>() const noexcept {
 		constexpr auto MATCHING_FUNCTIONS = cie::compute_matching_functions(SHAPE);
 		std::array<T, 3> xyz{ {T(0), T(0), T(0)} };
 		for (size_t i = 0u; i < SAMPLE_COUNT; ++i)
@@ -216,6 +212,13 @@ public:
 		return colorspace::XYZ<T, W>(xyz);
 	}
 
+	constexpr auto operator<=>(const Spd& rhs) const noexcept {
+		for (size_t i = 0u; i + 1 < _coefficients.size(); ++i)
+			if (const auto cmp = _coefficients[i] <=> rhs._coefficients[i]; cmp != 0)
+				return cmp;
+		return _coefficients.back() <=> rhs._coefficients.back();
+	}
+	
 private:
 	std::array<T, SAMPLE_COUNT> _coefficients;
 };
@@ -223,45 +226,45 @@ private:
 // ##############################################################################
 
 export template < std::floating_point T, size_t N, SpdShape<T, N> S >
-Spd<T, N, S> operator+(Spd<T, N, S> lhs, const Spd<T, N, S>& rhs) noexcept {
+constexpr Spd<T, N, S> operator+(Spd<T, N, S> lhs, const Spd<T, N, S>& rhs) noexcept {
 	return lhs += rhs;
 }
 export template < std::floating_point T, size_t N, SpdShape<T, N> S >
-Spd<T, N, S> operator-(Spd<T, N, S> lhs, const Spd<T, N, S>& rhs) noexcept {
+constexpr Spd<T, N, S> operator-(Spd<T, N, S> lhs, const Spd<T, N, S>& rhs) noexcept {
 	return lhs -= rhs;
 }
 export template < std::floating_point T, size_t N, SpdShape<T, N> S >
-Spd<T, N, S> operator*(Spd<T, N, S> lhs, const Spd<T, N, S>& rhs) noexcept {
+constexpr Spd<T, N, S> operator*(Spd<T, N, S> lhs, const Spd<T, N, S>& rhs) noexcept {
 	return lhs *= rhs;
 }
 export template < std::floating_point T, size_t N, SpdShape<T, N> S >
-Spd<T, N, S> operator/(Spd<T, N, S> lhs, const Spd<T, N, S>& rhs) noexcept {
+constexpr Spd<T, N, S> operator/(Spd<T, N, S> lhs, const Spd<T, N, S>& rhs) noexcept {
 	return lhs /= rhs;
 }
 
 export template < std::floating_point T, size_t N, SpdShape<T, N> S >
-Spd<T, N, S> operator+(Spd<T, N, S> lhs, T rhs) noexcept {
+constexpr Spd<T, N, S> operator+(Spd<T, N, S> lhs, T rhs) noexcept {
 	return lhs += rhs;
 }
 export template < std::floating_point T, size_t N, SpdShape<T, N> S >
-Spd<T, N, S> operator-(Spd<T, N, S> lhs, T rhs) noexcept {
+constexpr Spd<T, N, S> operator-(Spd<T, N, S> lhs, T rhs) noexcept {
 	return lhs -= rhs;
 }
 export template < std::floating_point T, size_t N, SpdShape<T, N> S >
-Spd<T, N, S> operator*(Spd<T, N, S> lhs, T rhs) noexcept {
+constexpr Spd<T, N, S> operator*(Spd<T, N, S> lhs, T rhs) noexcept {
 	return lhs *= rhs;
 }
 export template < std::floating_point T, size_t N, SpdShape<T, N> S >
-Spd<T, N, S> operator/(Spd<T, N, S> lhs, T rhs) noexcept {
+constexpr Spd<T, N, S> operator/(Spd<T, N, S> lhs, T rhs) noexcept {
 	return lhs /= rhs;
 }
 
 export template < std::floating_point T, size_t N, SpdShape<T, N> S >
-Spd<T, N, S> operator+(T lhs, Spd<T, N, S> rhs) noexcept {
+constexpr Spd<T, N, S> operator+(T lhs, Spd<T, N, S> rhs) noexcept {
 	return rhs += lhs;
 }
 export template < std::floating_point T, size_t N, SpdShape<T, N> S >
-Spd<T, N, S> operator*(T lhs, Spd<T, N, S> rhs) noexcept {
+constexpr Spd<T, N, S> operator*(T lhs, Spd<T, N, S> rhs) noexcept {
 	return rhs *= lhs;
 }
 
