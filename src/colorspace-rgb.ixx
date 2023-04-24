@@ -139,12 +139,12 @@ public:
 
 	template < XYY<T> W = C.white >
 	explicit Rgb(const XYZ<T, W>& xyz) :
-		Rgb((adaptation_cat_02<T, W, C.white>()* xyz).raw())
+		Rgb((math::Mat3<T>(C.from_xyz) * adaptation_cat_02<T, W, C.white>() * xyz).raw())
 	{}
 
 	template < RgbColorSpace<T> C2 >
 	explicit Rgb(const Rgb<T, C2, L>& rgb) :
-		Rgb((math::Mat3<T>(C.from_xyz)* adaptation_cat_02<T, C2.white, C.white>()* math::Mat3<T>(C.to_xyz)* XYZ<T, C.white>(rgb.r(), rgb.g(), rgb.b())).raw())
+		Rgb((math::Mat3<T>(C.from_xyz)* adaptation_cat_02<T, C2.white, C.white>() * math::Mat3<T>(C2.to_xyz)* XYZ<T, C.white>(rgb.r(), rgb.g(), rgb.b())).raw())
 	{}
 
 	constexpr Rgb& operator+=(const Rgb& rhs) noexcept {

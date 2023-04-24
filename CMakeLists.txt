@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25.0)
+cmake_minimum_required(VERSION 3.26.0)
 
 project(BlackBodyColorCalculator CXX)
 
@@ -24,17 +24,16 @@ target_sources(Spectrum
 		${CMAKE_CURRENT_SOURCE_DIR}/src/colorspace.xyz.aliases.ixx
 		${CMAKE_CURRENT_SOURCE_DIR}/src/math.ixx
 		${CMAKE_CURRENT_SOURCE_DIR}/src/spectrum.ixx
-		${CMAKE_CURRENT_SOURCE_DIR}/src/spectrum-coefficient.ixx
-		${CMAKE_CURRENT_SOURCE_DIR}/src/spectrum-rgb.ixx
-		${CMAKE_CURRENT_SOURCE_DIR}/src/spectrum-sampled.ixx
-		${CMAKE_CURRENT_SOURCE_DIR}/src/spectrum-xyz.ixx
-		${CMAKE_CURRENT_SOURCE_DIR}/src/spectrum.debug.ixx
+		${CMAKE_CURRENT_SOURCE_DIR}/src/spectrum-cie.ixx
+		${CMAKE_CURRENT_SOURCE_DIR}/src/spectrum-iterator.ixx
+		${CMAKE_CURRENT_SOURCE_DIR}/src/spectrum-shape.ixx
+		${CMAKE_CURRENT_SOURCE_DIR}/src/spectrum-spd.ixx
+		${CMAKE_CURRENT_SOURCE_DIR}/src/spectrum.blackbody.ixx
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/src/colorspace-adobe.cxx
 		${CMAKE_CURRENT_SOURCE_DIR}/src/colorspace-dcip3.cxx
 		${CMAKE_CURRENT_SOURCE_DIR}/src/colorspace-srgb.cxx
-		${CMAKE_CURRENT_SOURCE_DIR}/src/colorspace.xyz.cxx
-		${CMAKE_CURRENT_SOURCE_DIR}/src/spectrum-sampled.cxx)
+		${CMAKE_CURRENT_SOURCE_DIR}/src/colorspace.xyz.cxx)
 
 add_executable(SpectrumTest
 	${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)

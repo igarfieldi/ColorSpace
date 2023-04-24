@@ -1,4 +1,6 @@
 export module spectrum;
 
-export import :coefficient;
-export import :sampled;
+export import :cie;
+export import :iterator;
+export import :shape;
+export import :spd;
